@@ -1,0 +1,252 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Técnicas Ambientales - SilvaSentinel</title>
+    <link rel="stylesheet" href="{% static 'app/css/pagina5.css' %}">
+</head>
+<body>
+    <nav>
+        <div class="nav-brand">
+            <span class="logo">🌿 SilvaSentinel</span>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'index' %}">Inicio</a>
+            <a href="{% url 'pagina1' %}">Quiénes Somos</a>
+            <a href="{% url 'pagina4' %}">Contáctanos</a>
+            <a href="{% url 'pagina5' %}" class="active">Técnicas Ambientales</a>
+            
+            {% if user.is_authenticated %}
+                <a href="{% url 'pagina2' %}">Crear Denuncia</a>
+                <a href="{% url 'mis_denuncias' %}">Mis Denuncias</a>
+                
+                {% if user.es_revisor or user.es_admin %}
+                    <a href="{% url 'pagina6' %}">Gestionar Denuncias</a>
+                {% endif %}
+                
+                {% if user.es_admin %}
+                    <a href="{% url 'gestionar_usuarios' %}">Usuarios</a>
+                    <a href="{% url 'estadisticas_admin' %}">Estadísticas</a>
+                {% endif %}
+                
+                <div class="user-menu">
+                    <span class="user-icon">👤 {{ user.username }}</span>
+                    <div class="dropdown">
+                        <a href="{% url 'perfil_view' %}">Mi Perfil</a>
+                        <a href="{% url 'logout_view' %}">Cerrar Sesión</a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="{% url 'login_view' %}" class="btn-login">Iniciar Sesión</a>
+                <a href="{% url 'registro_publico' %}" class="btn-register">Registrarse</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="hero-small">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Técnicas de Cuidado Ambiental</h1>
+            <p>Aprende a proteger nuestro planeta</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <section class="intro-section">
+            <p class="intro-text">
+                Descubre prácticas sostenibles y técnicas efectivas para cuidar el medio ambiente. 
+                Pequeñas acciones cotidianas pueden generar un gran impacto positivo en nuestro planeta.
+            </p>
+        </section>
+
+        <div class="techniques-grid">
+            <article class="technique-card" data-color="green">
+                <div class="technique-icon">♻️</div>
+                <div class="technique-content">
+                    <h2>Reducción de Residuos</h2>
+                    <div class="technique-badge">Las 3R</div>
+                    <p>
+                        Adoptar la filosofía de las <strong>3R (Reducir, Reutilizar y Reciclar)</strong> 
+                        ayuda a minimizar la generación de basura, proteger los recursos naturales y 
+                        prevenir la contaminación de los ecosistemas.
+                    </p>
+                    <ul class="technique-list">
+                        <li>Separar materiales reciclables correctamente</li>
+                        <li>Reutilizar envases y contenedores</li>
+                        <li>Evitar el consumo de productos desechables</li>
+                        <li>Compostar residuos orgánicos</li>
+                        <li>Preferir productos con empaques biodegradables</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="technique-card" data-color="blue">
+                <div class="technique-icon">💧</div>
+                <div class="technique-content">
+                    <h2>Uso Responsable del Agua</h2>
+                    <div class="technique-badge">Recurso Vital</div>
+                    <p>
+                        El agua es un <strong>recurso esencial y cada vez más escaso</strong>. 
+                        Su conservación es fundamental para garantizar la supervivencia de los ecosistemas 
+                        y las futuras generaciones.
+                    </p>
+                    <ul class="technique-list">
+                        <li>Reparar fugas y goteras inmediatamente</li>
+                        <li>Instalar sistemas de ahorro (grifos, duchas)</li>
+                        <li>Utilizar agua de lluvia para riego</li>
+                        <li>Reducir el tiempo de ducha</li>
+                        <li>Evitar contaminar cuerpos de agua</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="technique-card" data-color="nature">
+                <div class="technique-icon">🌳</div>
+                <div class="technique-content">
+                    <h2>Conservación de la Biodiversidad</h2>
+                    <div class="technique-badge">Flora y Fauna</div>
+                    <p>
+                        Respetar la fauna y la flora silvestre, evitar la introducción de especies invasoras 
+                        y participar en actividades de restauración son esenciales para mantener la 
+                        <strong>riqueza natural y el equilibrio ecológico</strong>.
+                    </p>
+                    <ul class="technique-list">
+                        <li>No extraer plantas o animales de su hábitat</li>
+                        <li>Participar en jornadas de reforestación</li>
+                        <li>Apoyar proyectos de conservación</li>
+                        <li>No introducir especies exóticas</li>
+                        <li>Respetar áreas protegidas</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="technique-card" data-color="yellow">
+                <div class="technique-icon">☀️</div>
+                <div class="technique-content">
+                    <h2>Energías Renovables</h2>
+                    <div class="technique-badge">Energía Limpia</div>
+                    <p>
+                        Cambiar progresivamente a <strong>fuentes de energía renovable</strong> 
+                        (solar, eólica, hidroeléctrica) reduce el impacto ambiental y las emisiones 
+                        de gases de efecto invernadero.
+                    </p>
+                    <ul class="technique-list">
+                        <li>Instalar paneles solares</li>
+                        <li>Usar bombillas LED de bajo consumo</li>
+                        <li>Desconectar aparatos en modo standby</li>
+                        <li>Fomentar el uso de transporte público</li>
+                        <li>Utilizar bicicleta o caminar</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="technique-card" data-color="purple">
+                <div class="technique-icon">📚</div>
+                <div class="technique-content">
+                    <h2>Educación Ambiental</h2>
+                    <div class="technique-badge">Conciencia</div>
+                    <p>
+                        La <strong>formación y sensibilización</strong> son claves para que las futuras 
+                        generaciones adopten hábitos responsables y sostenibles. El conocimiento es 
+                        el primer paso hacia el cambio.
+                    </p>
+                    <ul class="technique-list">
+                        <li>Promover talleres y charlas ambientales</li>
+                        <li>Involucrar a instituciones educativas</li>
+                        <li>Crear campañas de difusión</li>
+                        <li>Compartir información en redes sociales</li>
+                        <li>Participar en actividades comunitarias</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="technique-card" data-color="red">
+                <div class="technique-icon">🌱</div>
+                <div class="technique-content">
+                    <h2>Consumo Responsable</h2>
+                    <div class="technique-badge">Sostenibilidad</div>
+                    <p>
+                        Elegir productos <strong>sostenibles, locales y de temporada</strong> reduce 
+                        la huella de carbono y apoya a las economías locales. Cada compra es una oportunidad 
+                        para generar impacto positivo.
+                    </p>
+                    <ul class="technique-list">
+                        <li>Preferir productos locales y orgánicos</li>
+                        <li>Comprar solo lo necesario</li>
+                        <li>Utilizar bolsas reutilizables</li>
+                        <li>Evitar el fast fashion</li>
+                        <li>Apoyar a productores sustentables</li>
+                    </ul>
+                </div>
+            </article>
+        </div>
+
+        <section class="tips-section">
+            <h2>Consejos Prácticos para el Día a Día</h2>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <span class="tip-emoji">🏠</span>
+                    <h3>En Casa</h3>
+                    <p>Desconecta electrodomésticos, usa termoventanas y aprovecha la luz natural</p>
+                </div>
+                <div class="tip-card">
+                    <span class="tip-emoji">🚗</span>
+                    <h3>Transporte</h3>
+                    <p>Comparte vehículos, usa transporte público o bicicleta cuando sea posible</p>
+                </div>
+                <div class="tip-card">
+                    <span class="tip-emoji">🛒</span>
+                    <h3>Compras</h3>
+                    <p>Lleva bolsas reutilizables y evita envases innecesarios</p>
+                </div>
+                <div class="tip-card">
+                    <span class="tip-emoji">🍽️</span>
+                    <h3>Alimentación</h3>
+                    <p>Reduce el consumo de carne, compra local y evita desperdicios</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <h2>Pon en Práctica lo Aprendido</h2>
+            <p>¿Observaste algún problema ambiental? Repórtalo y ayuda a proteger nuestro entorno</p>
+            {% if user.is_authenticated %}
+                <div class="cta-buttons">
+                    <a href="{% url 'pagina2' %}" class="btn btn-primary">Crear Denuncia</a>
+                    <a href="{% url 'mis_denuncias' %}" class="btn btn-outline">Ver Mis Denuncias</a>
+                </div>
+            {% else %}
+                <div class="cta-buttons">
+                    <a href="{% url 'registro_publico' %}" class="btn btn-primary">Registrarse</a>
+                    <a href="{% url 'pagina1' %}" class="btn btn-outline">Conocer Más</a>
+                </div>
+            {% endif %}
+        </section>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>SilvaSentinel</h4>
+                <p>Protegiendo el medio ambiente juntos</p>
+            </div>
+            <div class="footer-section">
+                <h4>Enlaces</h4>
+                <a href="{% url 'index' %}">Inicio</a>
+                <a href="{% url 'pagina1' %}">Quiénes Somos</a>
+                <a href="{% url 'pagina4' %}">Contáctanos</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contacto</h4>
+                <p>Email: info@silvasentinel.cl</p>
+                <p>Teléfono: +56 9 1234 5678</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 SilvaSentinel. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

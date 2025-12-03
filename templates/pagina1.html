@@ -1,0 +1,180 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiénes Somos - SilvaSentinel</title>
+    <link rel="stylesheet" href="{% static 'app/css/pagina1.css' %}">
+</head>
+<body>
+    <nav>
+        <div class="nav-brand">
+            <span class="logo">🌿 SilvaSentinel</span>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'index' %}">Inicio</a>
+            <a href="{% url 'pagina1' %}" class="active">Quiénes Somos</a>
+            <a href="{% url 'pagina4' %}">Contáctanos</a>
+            <a href="{% url 'pagina5' %}">Técnicas Ambientales</a>
+            
+            {% if user.is_authenticated %}
+                <a href="{% url 'pagina2' %}">Crear Denuncia</a>
+                <a href="{% url 'mis_denuncias' %}">Mis Denuncias</a>
+                
+                {% if user.es_revisor or user.es_admin %}
+                    <a href="{% url 'pagina6' %}">Gestionar Denuncias</a>
+                {% endif %}
+                
+                {% if user.es_admin %}
+                    <a href="{% url 'gestionar_usuarios' %}">Usuarios</a>
+                    <a href="{% url 'estadisticas_admin' %}">Estadísticas</a>
+                {% endif %}
+                
+                <div class="user-menu">
+                    <span class="user-icon">👤 {{ user.username }}</span>
+                    <div class="dropdown">
+                        <a href="{% url 'perfil_view' %}">Mi Perfil</a>
+                        <a href="{% url 'logout_view' %}">Cerrar Sesión</a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="{% url 'login_view' %}" class="btn-login">Iniciar Sesión</a>
+                <a href="{% url 'registro_publico' %}" class="btn-register">Registrarse</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="hero-small">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Quiénes Somos</h1>
+            <p>Comprometidos con la conservación ambiental</p>
+        </div>
+    </div>
+
+    <main class="container">
+        <section class="mission-section">
+            <div class="mission-card">
+                <div class="mission-icon">🎯</div>
+                <h2>Nuestra Misión</h2>
+                <p>
+                    Facilitar herramientas digitales para el monitoreo ambiental, denuncia de incidentes 
+                    y difusión de buenas prácticas que permitan proteger los ecosistemas y las especies nativas.
+                </p>
+            </div>
+        </section>
+
+        <section class="about-section">
+            <div class="about-content">
+                <h2>¿Quiénes Somos?</h2>
+                <p>
+                    Somos un grupo multidisciplinario comprometido con la conservación ambiental y 
+                    la protección de la biodiversidad. Trabajamos en conjunto con comunidades, expertos 
+                    y autoridades para promover el cuidado del entorno natural a través de tecnología y 
+                    ciencia ciudadana.
+                </p>
+                <p>
+                    Nuestra plataforma conecta a ciudadanos conscientes con las herramientas necesarias 
+                    para reportar problemas ambientales, hacer seguimiento de denuncias y aprender sobre 
+                    la importancia de preservar nuestro patrimonio natural.
+                </p>
+            </div>
+            <div class="about-image">
+                <img src="{% static 'png/fondo.png' %}" alt="Naturaleza">
+            </div>
+        </section>
+
+        <section class="values-section">
+            <h2>Nuestros Valores</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">🌱</div>
+                    <h3>Sostenibilidad</h3>
+                    <p>Promovemos prácticas sostenibles para preservar el medio ambiente</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🤝</div>
+                    <h3>Colaboración</h3>
+                    <p>Trabajamos unidos con la comunidad y autoridades</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">💡</div>
+                    <h3>Innovación</h3>
+                    <p>Utilizamos tecnología para soluciones ambientales</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🔍</div>
+                    <h3>Transparencia</h3>
+                    <p>Actuamos con honestidad y apertura en todas nuestras acciones</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="team-section">
+            <h2>Cómo Participar</h2>
+            <div class="participation-grid">
+                <div class="participation-card">
+                    <div class="step-number">1</div>
+                    <h3>Regístrate</h3>
+                    <p>Crea tu cuenta gratuita en nuestra plataforma</p>
+                </div>
+                <div class="participation-card">
+                    <div class="step-number">2</div>
+                    <h3>Reporta</h3>
+                    <p>Denuncia problemas ambientales que observes</p>
+                </div>
+                <div class="participation-card">
+                    <div class="step-number">3</div>
+                    <h3>Haz Seguimiento</h3>
+                    <p>Consulta el estado de tus denuncias</p>
+                </div>
+                <div class="participation-card">
+                    <div class="step-number">4</div>
+                    <h3>Aprende</h3>
+                    <p>Conoce técnicas de cuidado ambiental</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <h2>Únete a la Comunidad SilvaSentinel</h2>
+            <p>Juntos podemos marcar la diferencia en la protección del medio ambiente</p>
+            {% if not user.is_authenticated %}
+                <div class="cta-buttons">
+                    <a href="{% url 'registro_publico' %}" class="btn btn-primary">Registrarse Ahora</a>
+                    <a href="{% url 'pagina4' %}" class="btn btn-outline">Contáctanos</a>
+                </div>
+            {% else %}
+                <div class="cta-buttons">
+                    <a href="{% url 'pagina2' %}" class="btn btn-primary">Crear Denuncia</a>
+                    <a href="{% url 'mis_denuncias' %}" class="btn btn-outline">Mis Denuncias</a>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>SilvaSentinel</h4>
+                <p>Protegiendo el medio ambiente juntos</p>
+            </div>
+            <div class="footer-section">
+                <h4>Enlaces</h4>
+                <a href="{% url 'index' %}">Inicio</a>
+                <a href="{% url 'pagina4' %}">Contáctanos</a>
+                <a href="{% url 'pagina5' %}">Técnicas Ambientales</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contacto</h4>
+                <p>Email: info@silvasentinel.cl</p>
+                <p>Teléfono: +56 9 1234 5678</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 SilvaSentinel. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

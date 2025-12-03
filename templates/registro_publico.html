@@ -1,0 +1,131 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Cuenta - SilvaSentinel</title>
+    <link rel="stylesheet" href="{% static 'app/css/registro.css' %}">
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-left">
+            <div class="brand">
+                <span class="logo">🌿 SilvaSentinel</span>
+                <p class="tagline">Únete a nuestra comunidad ambiental</p>
+            </div>
+            <div class="features-list">
+                <div class="feature-item">
+                    <span class="feature-icon">✅</span>
+                    <div class="feature-text">
+                        <strong>Reporta Incidentes</strong>
+                        <p>Denuncia problemas ambientales</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📊</span>
+                    <div class="feature-text">
+                        <strong>Seguimiento</strong>
+                        <p>Consulta el estado de tus denuncias</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🌍</span>
+                    <div class="feature-text">
+                        <strong>Impacto Real</strong>
+                        <p>Contribuye a proteger el planeta</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="register-right">
+            <div class="register-form-container">
+                <h1>Crear Cuenta</h1>
+                <p class="subtitle">Regístrate y comienza a hacer la diferencia</p>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="mensaje {{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post" class="register-form">
+                    {% csrf_token %}
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required">Nombre de usuario</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">👤</span>
+                                <input type="text" name="username" placeholder="Usuario único" required autofocus>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="required">Correo electrónico</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">📧</span>
+                                <input type="email" name="email" placeholder="correo@ejemplo.com" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" name="first_name" placeholder="Tu nombre">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Apellido</label>
+                            <input type="text" name="last_name" placeholder="Tu apellido">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📞</span>
+                            <input type="text" name="telefono" placeholder="+56 9 1234 5678">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required">Contraseña</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">🔒</span>
+                                <input type="password" name="password" placeholder="Mínimo 6 caracteres" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="required">Confirmar contraseña</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">🔒</span>
+                                <input type="password" name="password_confirm" placeholder="Repite tu contraseña" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full">Crear Cuenta</button>
+                </form>
+
+                <div class="divider">
+                    <span>o</span>
+                </div>
+
+                <div class="login-prompt">
+                    <p>¿Ya tienes una cuenta?</p>
+                    <a href="{% url 'login_view' %}" class="btn btn-outline btn-full">Iniciar Sesión</a>
+                </div>
+
+                <div class="back-home">
+                    <a href="{% url 'index' %}">← Volver al Inicio</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

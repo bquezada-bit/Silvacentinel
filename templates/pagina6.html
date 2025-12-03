@@ -1,0 +1,256 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Denuncias - SilvaSentinel</title>
+    <link rel="stylesheet" href="{% static 'app/css/pagina6.css' %}">
+</head>
+<body>
+    <nav>
+        <div class="nav-brand">
+            <span class="logo">🌿 SilvaSentinel</span>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'index' %}">Inicio</a>
+            <a href="{% url 'pagina1' %}">Quiénes Somos</a>
+            <a href="{% url 'pagina4' %}">Contáctanos</a>
+            <a href="{% url 'pagina5' %}">Técnicas Ambientales</a>
+            
+            {% if user.is_authenticated %}
+                <a href="{% url 'pagina2' %}">Crear Denuncia</a>
+                <a href="{% url 'mis_denuncias' %}">Mis Denuncias</a>
+                
+                {% if user.es_revisor or user.es_admin %}
+                    <a href="{% url 'pagina6' %}" class="active">Gestionar Denuncias</a>
+                {% endif %}
+                
+                {% if user.es_admin %}
+                    <a href="{% url 'gestionar_usuarios' %}">Usuarios</a>
+                    <a href="{% url 'estadisticas_admin' %}">Estadísticas</a>
+                {% endif %}
+                
+                <div class="user-menu">
+                    <span class="user-icon">👤 {{ user.username }}</span>
+                    <div class="dropdown">
+                        <a href="{% url 'perfil_view' %}">Mi Perfil</a>
+                        <a href="{% url 'logout_view' %}">Cerrar Sesión</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>Gestión de Denuncias</h1>
+                <p class="subtitle">Panel de administración - {{ user.get_rol_display }}</p>
+            </div>
+            <div class="header-actions">
+                <a href="{% url 'estadisticas_admin' %}" class="btn btn-outline">📊 Estadísticas</a>
+            </div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mensaje {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="stats-cards">
+            <div class="stat-card">
+                <div class="stat-icon">📋</div>
+                <div class="stat-info">
+                    <div class="stat-number">{{ total }}</div>
+                    <div class="stat-label">Total Denuncias</div>
+                </div>
+            </div>
+            <div class="stat-card pending">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-info">
+                    <div class="stat-number">{{ pendientes }}</div>
+                    <div class="stat-label">Pendientes</div>
+                </div>
+            </div>
+            <div class="stat-card progress">
+                <div class="stat-icon">🔄</div>
+                <div class="stat-info">
+                    <div class="stat-number">{{ en_proceso }}</div>
+                    <div class="stat-label">En Proceso</div>
+                </div>
+            </div>
+            <div class="stat-card resolved">
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <div class="stat-number">{{ resueltas }}</div>
+                    <div class="stat-label">Resueltas</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="filters-section">
+            <h3>Filtros</h3>
+            <form method="get" class="filters-form">
+                <div class="filter-group">
+                    <label>Buscar</label>
+                    <input type="text" name="q" placeholder="Título o descripción..." value="{{ request.GET.q }}">
+                </div>
+                
+                <div class="filter-group">
+                    <label>Estado</label>
+                    <select name="estado">
+                        <option value="">Todos</option>
+                        {% for valor, etiqueta in estados %}
+                            <option value="{{ valor }}" {% if request.GET.estado == valor %}selected{% endif %}>
+                                {{ etiqueta }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Prioridad</label>
+                    <select name="prioridad">
+                        <option value="">Todas</option>
+                        {% for valor, etiqueta in prioridades %}
+                            <option value="{{ valor }}" {% if request.GET.prioridad == valor %}selected{% endif %}>
+                                {{ etiqueta }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Categoría</label>
+                    <select name="categoria">
+                        <option value="">Todas</option>
+                        {% for cat in categorias %}
+                            <option value="{{ cat.id }}" {% if request.GET.categoria == cat.id|stringformat:"s" %}selected{% endif %}>
+                                {{ cat.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
+                    <a href="{% url 'pagina6' %}" class="btn btn-secondary">Limpiar</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <h3>Lista de Denuncias</h3>
+                <span class="record-count">{{ denuncias|length }} registros</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="denuncias-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Usuario</th>
+                            <th>Título</th>
+                            <th>Categoría</th>
+                            <th>Estado</th>
+                            <th>Prioridad</th>
+                            <th>Fecha</th>
+                            <th>Evidencia</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for denuncia in denuncias %}
+                        <tr>
+                            <td class="id-cell">#{{ denuncia.id }}</td>
+                            <td>
+                                <div class="user-info">
+                                    <span class="user-avatar">👤</span>
+                                    <span>{{ denuncia.usuario.username }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="title-cell">
+                                    <strong>{{ denuncia.titulo }}</strong>
+                                    <small>{{ denuncia.descripcion|truncatewords:10 }}</small>
+                                </div>
+                            </td>
+                            <td>
+                                {% if denuncia.categoria %}
+                                    <span class="badge badge-category">{{ denuncia.categoria.nombre }}</span>
+                                {% else %}
+                                    <span class="badge badge-gray">Sin categoría</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge badge-estado-{{ denuncia.estado }}">
+                                    {{ denuncia.get_estado_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge badge-prioridad-{{ denuncia.prioridad }}">
+                                    {{ denuncia.get_prioridad_display }}
+                                </span>
+                            </td>
+                            <td class="date-cell">{{ denuncia.fecha_creacion|date:"d/m/Y H:i" }}</td>
+                            <td class="evidence-cell">
+                                {% if denuncia.evidencia %}
+                                    <img src="{{ denuncia.evidencia.url }}" alt="Evidencia" class="evidence-thumb">
+                                {% elif denuncia.evidencia_url %}
+                                    <span class="badge badge-info">URL</span>
+                                {% else %}
+                                    <span class="no-evidence">Sin evidencia</span>
+                                {% endif %}
+                            </td>
+                            <td class="actions-cell">
+                                <div class="action-buttons">
+                                    <a href="{% url 'editar_denuncia' denuncia.id %}" class="btn-action btn-edit" title="Editar">
+                                        ✏️
+                                    </a>
+                                    <a href="{% url 'ver_historial_denuncia' denuncia.id %}" class="btn-action btn-history" title="Historial">
+                                        📜
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9" class="empty-state">
+                                <div class="empty-icon">📭</div>
+                                <p>No hay denuncias que coincidan con los filtros</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>SilvaSentinel</h4>
+                <p>Protegiendo el medio ambiente juntos</p>
+            </div>
+            <div class="footer-section">
+                <h4>Enlaces</h4>
+                <a href="{% url 'index' %}">Inicio</a>
+                <a href="{% url 'pagina1' %}">Quiénes Somos</a>
+                <a href="{% url 'pagina4' %}">Contáctanos</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contacto</h4>
+                <p>Email: info@silvasentinel.cl</p>
+                <p>Teléfono: +56 9 1234 5678</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 SilvaSentinel. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

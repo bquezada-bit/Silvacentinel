@@ -1,0 +1,163 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Denuncias - SilvaSentinel</title>
+    <link rel="stylesheet" href="{% static 'app/css/mis_denuncias.css' %}">
+</head>
+<body>
+    <nav>
+        <div class="nav-brand">
+            <span class="logo">🌿 SilvaSentinel</span>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'index' %}">Inicio</a>
+            <a href="{% url 'pagina1' %}">Quiénes Somos</a>
+            <a href="{% url 'pagina4' %}">Contáctanos</a>
+            <a href="{% url 'pagina5' %}">Técnicas Ambientales</a>
+            <a href="{% url 'pagina2' %}">Crear Denuncia</a>
+            <a href="{% url 'mis_denuncias' %}" class="active">Mis Denuncias</a>
+            
+            {% if user.es_revisor or user.es_admin %}
+                <a href="{% url 'pagina6' %}">Gestionar Denuncias</a>
+            {% endif %}
+            
+            {% if user.es_admin %}
+                <a href="{% url 'gestionar_usuarios' %}">Usuarios</a>
+                <a href="{% url 'estadisticas_admin' %}">Estadísticas</a>
+            {% endif %}
+            
+            <div class="user-menu">
+                <span class="user-icon">👤 {{ user.username }}</span>
+                <div class="dropdown">
+                    <a href="{% url 'perfil_view' %}">Mi Perfil</a>
+                    <a href="{% url 'logout_view' %}">Cerrar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>Mis Denuncias</h1>
+                <p class="subtitle">Gestiona y da seguimiento a tus reportes ambientales</p>
+            </div>
+            <div class="header-actions">
+                <a href="{% url 'pagina2' %}" class="btn btn-primary">+ Nueva Denuncia</a>
+            </div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mensaje {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="stats-cards">
+            <div class="stat-card">
+                <div class="stat-icon">📋</div>
+                <div class="stat-info">
+                    <div class="stat-number">{{ total }}</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+            <div class="stat-card pending">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-info">
+                    <div class="stat-number">{{ pendientes }}</div>
+                    <div class="stat-label">Pendientes</div>
+                </div>
+            </div>
+            <div class="stat-card resolved">
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <div class="stat-number">{{ resueltas }}</div>
+                    <div class="stat-label">Resueltas</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="denuncias-grid">
+            {% for denuncia in denuncias %}
+            <div class="denuncia-card">
+                <div class="card-header">
+                    <div class="card-id">#{{ denuncia.id }}</div>
+                    <span class="badge badge-estado-{{ denuncia.estado }}">
+                        {{ denuncia.get_estado_display }}
+                    </span>
+                </div>
+
+                <div class="card-body">
+                    <h3>{{ denuncia.titulo }}</h3>
+                    <p class="description">{{ denuncia.descripcion|truncatewords:20 }}</p>
+                    
+                    <div class="card-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">📂</span>
+                            <span>{{ denuncia.categoria.nombre }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">📅</span>
+                            <span>{{ denuncia.fecha_creacion|date:"d/m/Y" }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="badge badge-prioridad-{{ denuncia.prioridad }}">
+                                {{ denuncia.get_prioridad_display }}
+                            </span>
+                        </div>
+                    </div>
+
+                    {% if denuncia.evidencia %}
+                    <div class="card-evidence">
+                        <img src="{{ denuncia.evidencia.url }}" alt="Evidencia">
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="card-footer">
+                    {% if denuncia.estado == 'pendiente' %}
+                        <a href="{% url 'editar_mi_denuncia' denuncia.id %}" class="btn btn-edit">Editar</a>
+                        <a href="{% url 'eliminar_mi_denuncia' denuncia.id %}" class="btn btn-delete">Eliminar</a>
+                    {% else %}
+                        <span class="text-muted">No puedes editar denuncias procesadas</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <h2>No tienes denuncias</h2>
+                <p>Crea tu primera denuncia para empezar a proteger el medio ambiente</p>
+                <a href="{% url 'pagina2' %}" class="btn btn-primary btn-large">Crear Denuncia</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>SilvaSentinel</h4>
+                <p>Protegiendo el medio ambiente juntos</p>
+            </div>
+            <div class="footer-section">
+                <h4>Enlaces</h4>
+                <a href="{% url 'index' %}">Inicio</a>
+                <a href="{% url 'pagina1' %}">Quiénes Somos</a>
+                <a href="{% url 'pagina4' %}">Contáctanos</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contacto</h4>
+                <p>Email: info@silvasentinel.cl</p>
+                <p>Teléfono: +56 9 1234 5678</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 SilvaSentinel. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

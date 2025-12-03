@@ -1,0 +1,226 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - SilvaSentinel</title>
+    <link rel="stylesheet" href="{% static 'app/css/pagina4.css' %}">
+</head>
+<body>
+    <nav>
+        <div class="nav-brand">
+            <span class="logo">🌿 SilvaSentinel</span>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'index' %}">Inicio</a>
+            <a href="{% url 'pagina1' %}">Quiénes Somos</a>
+            <a href="{% url 'pagina4' %}" class="active">Contáctanos</a>
+            <a href="{% url 'pagina5' %}">Técnicas Ambientales</a>
+            
+            {% if user.is_authenticated %}
+                <a href="{% url 'pagina2' %}">Crear Denuncia</a>
+                <a href="{% url 'mis_denuncias' %}">Mis Denuncias</a>
+                
+                {% if user.es_revisor or user.es_admin %}
+                    <a href="{% url 'pagina6' %}">Gestionar Denuncias</a>
+                {% endif %}
+                
+                {% if user.es_admin %}
+                    <a href="{% url 'gestionar_usuarios' %}">Usuarios</a>
+                    <a href="{% url 'estadisticas_admin' %}">Estadísticas</a>
+                {% endif %}
+                
+                <div class="user-menu">
+                    <span class="user-icon">👤 {{ user.username }}</span>
+                    <div class="dropdown">
+                        <a href="{% url 'perfil_view' %}">Mi Perfil</a>
+                        <a href="{% url 'logout_view' %}">Cerrar Sesión</a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="{% url 'login_view' %}" class="btn-login">Iniciar Sesión</a>
+                <a href="{% url 'registro_publico' %}" class="btn-register">Registrarse</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="hero-small">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Contáctanos</h1>
+            <p>Estamos aquí para ayudarte</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <section class="intro-section">
+            <p class="intro-text">
+                ¿Tienes dudas, sugerencias o quieres comunicarte con nuestro equipo? 
+                Estamos disponibles para atender tus consultas y trabajar juntos por el medio ambiente.
+            </p>
+        </section>
+
+        <div class="contact-grid">
+            <div class="contact-info">
+                <h2>Información de Contacto</h2>
+                
+                <div class="contact-cards">
+                    <div class="contact-card">
+                        <div class="contact-icon">📍</div>
+                        <h3>Ubicación</h3>
+                        <p>Av. Providencia 1234<br>Providencia, Santiago<br>Chile</p>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="contact-icon">📞</div>
+                        <h3>Teléfono</h3>
+                        <p>+56 9 1234 5678</p>
+                        <small>Lun - Vie: 9:00 - 18:00</small>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="contact-icon">📧</div>
+                        <h3>Email</h3>
+                        <p>info@silvasentinel.cl</p>
+                        <p>soporte@silvasentinel.cl</p>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="contact-icon">⏰</div>
+                        <h3>Horario de Atención</h3>
+                        <p>Lunes a Viernes<br>9:00 AM - 6:00 PM</p>
+                    </div>
+                </div>
+
+                <div class="social-links">
+                    <h3>Síguenos en Redes Sociales</h3>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon facebook">Facebook</a>
+                        <a href="#" class="social-icon twitter">Twitter</a>
+                        <a href="#" class="social-icon instagram">Instagram</a>
+                        <a href="#" class="social-icon linkedin">LinkedIn</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-form-container">
+                <h2>Envíanos un Mensaje</h2>
+                <form class="contact-form" method="post">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label class="required">Nombre Completo</label>
+                        <input type="text" name="nombre" placeholder="Tu nombre" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="required">Email</label>
+                        <input type="email" name="email" placeholder="tu@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="tel" name="telefono" placeholder="+56 9 1234 5678">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="required">Asunto</label>
+                        <select name="asunto" required>
+                            <option value="">-- Selecciona un asunto --</option>
+                            <option value="consulta">Consulta General</option>
+                            <option value="soporte">Soporte Técnico</option>
+                            <option value="sugerencia">Sugerencia</option>
+                            <option value="colaboracion">Colaboración</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="required">Mensaje</label>
+                        <textarea name="mensaje" rows="6" placeholder="Escribe tu mensaje aquí..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <span>📤</span> Enviar Mensaje
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <section class="faq-section">
+            <h2>Preguntas Frecuentes</h2>
+            <div class="faq-grid">
+                <div class="faq-card">
+                    <h3>¿Cómo puedo crear una denuncia?</h3>
+                    <p>Primero debes registrarte en la plataforma. Una vez iniciada sesión, podrás acceder al formulario de denuncia desde el menú principal.</p>
+                </div>
+
+                <div class="faq-card">
+                    <h3>¿Las denuncias son anónimas?</h3>
+                    <p>Tu identidad está protegida. Solo el equipo de revisores y administradores puede ver quién creó cada denuncia.</p>
+                </div>
+
+                <div class="faq-card">
+                    <h3>¿Cuánto tiempo tarda la respuesta?</h3>
+                    <p>Nuestro equipo revisa las denuncias en un plazo de 24 a 48 horas hábiles. Las denuncias de alta prioridad se atienden más rápido.</p>
+                </div>
+
+                <div class="faq-card">
+                    <h3>¿Puedo editar mi denuncia?</h3>
+                    <p>Sí, puedes editar tu denuncia mientras esté en estado "Pendiente". Una vez que cambie de estado, solo los administradores pueden modificarla.</p>
+                </div>
+
+                <div class="faq-card">
+                    <h3>¿Cómo puedo colaborar?</h3>
+                    <p>Puedes colaborar reportando incidentes, compartiendo información sobre técnicas ambientales o contactándonos para propuestas de alianza.</p>
+                </div>
+
+                <div class="faq-card">
+                    <h3>¿La plataforma es gratuita?</h3>
+                    <p>Sí, SilvaSentinel es completamente gratuita para todos los usuarios comprometidos con la protección del medio ambiente.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <h2>¿Listo para Empezar?</h2>
+            <p>Únete a nuestra comunidad y ayuda a proteger el medio ambiente</p>
+            {% if not user.is_authenticated %}
+                <div class="cta-buttons">
+                    <a href="{% url 'registro_publico' %}" class="btn btn-primary">Crear Cuenta</a>
+                    <a href="{% url 'pagina1' %}" class="btn btn-outline">Conocer Más</a>
+                </div>
+            {% else %}
+                <div class="cta-buttons">
+                    <a href="{% url 'pagina2' %}" class="btn btn-primary">Crear Denuncia</a>
+                    <a href="{% url 'mis_denuncias' %}" class="btn btn-outline">Mis Denuncias</a>
+                </div>
+            {% endif %}
+        </section>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>SilvaSentinel</h4>
+                <p>Protegiendo el medio ambiente juntos</p>
+            </div>
+            <div class="footer-section">
+                <h4>Enlaces</h4>
+                <a href="{% url 'index' %}">Inicio</a>
+                <a href="{% url 'pagina1' %}">Quiénes Somos</a>
+                <a href="{% url 'pagina5' %}">Técnicas Ambientales</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contacto</h4>
+                <p>Email: info@silvasentinel.cl</p>
+                <p>Teléfono: +56 9 1234 5678</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 SilvaSentinel. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - SilvaSentinel</title>
+    <link rel="stylesheet" href="{% static 'app/css/login.css' %}">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-left">
+            <div class="brand">
+                <span class="logo">🌿 SilvaSentinel</span>
+                <p class="tagline">Protegiendo el medio ambiente juntos</p>
+            </div>
+            <div class="illustration">
+                <div class="circle circle-1"></div>
+                <div class="circle circle-2"></div>
+                <div class="circle circle-3"></div>
+            </div>
+        </div>
+
+        <div class="login-right">
+            <div class="login-form-container">
+                <h1>Iniciar Sesión</h1>
+                <p class="subtitle">Accede a tu cuenta para gestionar denuncias ambientales</p>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="mensaje {{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post" class="login-form">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label class="required">Usuario</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">👤</span>
+                            <input type="text" name="username" placeholder="Tu nombre de usuario" required autofocus>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="required">Contraseña</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔒</span>
+                            <input type="password" name="password" placeholder="Tu contraseña" required>
+                        </div>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="remember">
+                            <span>Recordarme</span>
+                        </label>
+                        <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full">Iniciar Sesión</button>
+                </form>
+
+                <div class="divider">
+                    <span>o</span>
+                </div>
+
+                <div class="register-prompt">
+                    <p>¿No tienes una cuenta?</p>
+                    <a href="{% url 'registro_publico' %}" class="btn btn-outline btn-full">Crear Cuenta</a>
+                </div>
+
+                <div class="back-home">
+                    <a href="{% url 'index' %}">← Volver al Inicio</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

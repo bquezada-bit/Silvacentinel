@@ -1,0 +1,219 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Denuncia - SilvaSentinel</title>
+    <link rel="stylesheet" href="{% static 'app/css/pagina2.css' %}">
+</head>
+<body>
+    <nav>
+        <div class="nav-brand">
+            <span class="logo">🌿 SilvaSentinel</span>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'index' %}">Inicio</a>
+            <a href="{% url 'pagina1' %}">Quiénes Somos</a>
+            <a href="{% url 'pagina4' %}">Contáctanos</a>
+            <a href="{% url 'pagina5' %}">Técnicas Ambientales</a>
+            
+            {% if user.is_authenticated %}
+                <a href="{% url 'pagina2' %}" class="active">Crear Denuncia</a>
+                <a href="{% url 'mis_denuncias' %}">Mis Denuncias</a>
+                
+                {% if user.es_revisor or user.es_admin %}
+                    <a href="{% url 'pagina6' %}">Gestionar Denuncias</a>
+                {% endif %}
+                
+                {% if user.es_admin %}
+                    <a href="{% url 'gestionar_usuarios' %}">Usuarios</a>
+                    <a href="{% url 'estadisticas_admin' %}">Estadísticas</a>
+                {% endif %}
+                
+                <div class="user-menu">
+                    <span class="user-icon">👤 {{ user.username }}</span>
+                    <div class="dropdown">
+                        <a href="{% url 'perfil_view' %}">Mi Perfil</a>
+                        <a href="{% url 'logout_view' %}">Cerrar Sesión</a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="{% url 'login_view' %}" class="btn-login">Iniciar Sesión</a>
+                <a href="{% url 'registro_publico' %}" class="btn-register">Registrarse</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Reportar Incidente Ambiental</h1>
+            {% if user.is_authenticated %}
+                <p class="subtitle">Hola <strong>{{ user.username }}</strong>, ayuda a proteger el medio ambiente reportando problemas</p>
+            {% else %}
+                <p class="subtitle">Para crear una denuncia, primero debes registrarte o iniciar sesión</p>
+            {% endif %}
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mensaje {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            <div class="form-container">
+                <form method="post" enctype="multipart/form-data" class="denuncia-form">
+                    {% csrf_token %}
+                    
+                    <div class="form-section">
+                        <h3 class="section-title">Información General</h3>
+                        
+                        <div class="form-group">
+                            <label class="required">Título de la denuncia</label>
+                            <input type="text" name="titulo" placeholder="Ej: Tala ilegal en parque nacional" required>
+                            <small class="note">Un nombre que pueda identificar rápidamente el problema</small>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="required">Categoría</label>
+                                <select name="categoria" required>
+                                    <option value="">-- Selecciona una categoría --</option>
+                                    {% for cat in categorias %}
+                                        <option value="{{ cat.id }}">{{ cat.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="required">Prioridad</label>
+                                <select name="prioridad" required>
+                                    <option value="baja">🟢 Baja</option>
+                                    <option value="media" selected>🟡 Media</option>
+                                    <option value="alta">🔴 Alta</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="required">Descripción del problema</label>
+                            <textarea name="descripcion" rows="5" placeholder="Describe detalladamente el problema ambiental..." required></textarea>
+                            <small class="note">Proporciona todos los detalles que consideres relevantes</small>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="section-title">Ubicación</h3>
+                        
+                        <div class="form-group">
+                            <label class="required">Ubicación del incidente</label>
+                            <input type="text" name="ubicacion_texto" placeholder="Ej: Parque Nacional Torres del Paine" required>
+                            <small class="note">Describe el lugar donde ocurre el problema</small>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Latitud (opcional)</label>
+                                <input type="number" name="latitud" step="any" placeholder="-33.4489">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Longitud (opcional)</label>
+                                <input type="number" name="longitud" step="any" placeholder="-70.6693">
+                            </div>
+                        </div>
+                        
+                        <div class="info-box">
+                            <span class="info-icon">ℹ️</span>
+                            <p>Las coordenadas GPS ayudan a localizar mejor el incidente, pero no son obligatorias</p>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="section-title">Evidencia</h3>
+                        
+                        <div class="form-group">
+                            <label>Subir archivo</label>
+                            <div class="file-input-wrapper">
+                                <input type="file" name="evidencia" id="evidencia" accept="image/*,video/*">
+                                <label for="evidencia" class="file-input-label">
+                                    <span class="file-icon">📎</span>
+                                    <span class="file-text">Seleccionar imagen o video</span>
+                                </label>
+                            </div>
+                            <small class="note">Formatos: JPG, PNG, MP4. Tamaño máximo: 10MB</small>
+                        </div>
+
+                        <div class="form-divider">
+                            <span>O</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>URL de evidencia</label>
+                            <input type="text" name="evidencia_url" placeholder="https://ejemplo.com/foto.jpg">
+                            <small class="note">Si la evidencia está en línea, puedes ingresar el enlace aquí</small>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <span>📤</span> Enviar Denuncia
+                        </button>
+                        <a href="{% url 'mis_denuncias' %}" class="btn btn-secondary">Ver Mis Denuncias</a>
+                    </div>
+                </form>
+            </div>
+        {% else %}
+            <div class="auth-required">
+                <div class="auth-icon">🔒</div>
+                <h2>Autenticación Requerida</h2>
+                <p>Para crear denuncias ambientales necesitas tener una cuenta en SilvaSentinel</p>
+                <div class="auth-actions">
+                    <a href="{% url 'registro_publico' %}" class="btn btn-primary">Crear Cuenta</a>
+                    <a href="{% url 'login_view' %}" class="btn btn-outline">Iniciar Sesión</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>SilvaSentinel</h4>
+                <p>Protegiendo el medio ambiente juntos</p>
+            </div>
+            <div class="footer-section">
+                <h4>Enlaces</h4>
+                <a href="{% url 'index' %}">Inicio</a>
+                <a href="{% url 'pagina1' %}">Quiénes Somos</a>
+                <a href="{% url 'pagina4' %}">Contáctanos</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contacto</h4>
+                <p>Email: info@silvasentinel.cl</p>
+                <p>Teléfono: +56 9 1234 5678</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 SilvaSentinel. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        const fileInput = document.getElementById('evidencia');
+        const fileLabel = document.querySelector('.file-text');
+        
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                const fileName = e.target.files[0]?.name;
+                if (fileName) {
+                    fileLabel.textContent = fileName;
+                } else {
+                    fileLabel.textContent = 'Seleccionar imagen o video';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

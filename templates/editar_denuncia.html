@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Denuncia - SilvaSentinel</title>
+    <link rel="stylesheet" href="{% static 'app/css/editar_denuncia.css' %}">
+</head>
+<body>
+    <nav>
+        <a href="{% url 'index' %}">Inicio</a>
+        <a href="{% url 'pagina1' %}">Quiénes Somos</a>
+        <a href="{% url 'pagina4' %}">Contáctanos</a>
+        <a href="{% url 'pagina5' %}">Técnicas Ambientales</a>
+        
+        {% if user.is_authenticated %}
+            <a href="{% url 'pagina2' %}">Crear Denuncia</a>
+            <a href="{% url 'mis_denuncias' %}">Mis Denuncias</a>
+            
+            {% if user.es_revisor or user.es_admin %}
+                <a href="{% url 'pagina6' %}">Gestionar Denuncias</a>
+            {% endif %}
+            
+            {% if user.es_admin %}
+                <a href="{% url 'gestionar_usuarios' %}">Usuarios</a>
+                <a href="{% url 'estadisticas_admin' %}">Estadísticas</a>
+            {% endif %}
+            
+            <a href="{% url 'perfil_view' %}">{{ user.username }}</a>
+            <a href="{% url 'logout_view' %}">Cerrar Sesión</a>
+        {% else %}
+            <a href="{%url 'login_view' %}">Iniciar Sesión</a>
+            <a href="{% url 'registro_publico' %}">Registrarse</a>
+        {% endif %}
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Editar Denuncia</h1>
+            <p class="subtitle">Denuncia #{{ denuncia.id }} - {{ denuncia.titulo }}</p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mensaje {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" class="form-editar">
+            {% csrf_token %}
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="required">Título</label>
+                    <input type="text" name="titulo" value="{{ denuncia.titulo }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="required">Categoría</label>
+                    <select name="categoria" required>
+                        <option value="">-- Seleccionar --</option>
+                        {% for cat in categorias %}
+                            <option value="{{ cat.id }}" {% if denuncia.categoria.id == cat.id %}selected{% endif %}>
+                                {{ cat.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group full-width">
+                    <label class="required">Descripción</label>
+                    <textarea name="descripcion" rows="6" required>{{ denuncia.descripcion }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="required">Estado</label>
+                    <select name="estado" required>
+                        {% for valor, etiqueta in denuncia.ESTADOS %}
+                            <option value="{{ valor }}" {% if denuncia.estado == valor %}selected{% endif %}>
+                                {{ etiqueta }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="required">Prioridad</label>
+                    <select name="prioridad" required>
+                        {% for valor, etiqueta in denuncia.PRIORIDADES %}
+                            <option value="{{ valor }}" {% if denuncia.prioridad == valor %}selected{% endif %}>
+                                {{ etiqueta }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                {% if  denuncia.evidencia %}
+                    <div class="form-group full-width">
+                        <label>Evidencia actual</label>
+                        <div class="evidencia-preview">
+                            {% if denuncia.evidencia.url|slice:"-4:" == ".mp4" or denuncia.evidencia.url|slice:"-4:" == ".avi" %}
+                                <video width="100%" controls>
+                                    <source src="{{ denuncia.evidencia.url }}" type="video/mp4">
+                                </video>
+                            {% else %}
+                                <img src="{{ denuncia.evidencia.url }}" alt="Evidencia">
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="form-group full-width info-box">
+                    <p><strong>Usuario:</strong> {{ denuncia.usuario.username }}</p>
+                    <p><strong>Fecha creación:</strong> {{ denuncia.fecha_creacion|date:"d/m/Y H:i" }}</p>
+                    <p><strong>Última actualización:</strong> {{ denuncia.fecha_actualizacion|date:"d/m/Y H:i" }}</p>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                <a href="{% url 'pagina6' %}" class="btn btn-secondary">Cancelar</a>
+                <a href="{% url 'ver_historial_denuncia' denuncia.id %}" class="btn btn-outline">Ver Historial</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

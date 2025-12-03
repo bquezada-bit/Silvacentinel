@@ -1,0 +1,94 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Flora y Fauna por Ubicación</title>
+    <link rel="stylesheet" href="{% static 'app/css/pagina3.css' %}">
+</head>
+<body>
+    <header class="header">
+        <h1>Flora y Fauna por Ubicación</h1>
+        <p>Ingresa un nombre para explorar especies asociadas.</p>
+    </header>
+
+    <section class="buscador">
+        <form method="get">
+            <input type="text" name="ubicacion" placeholder="Ej: Trebol, Zorro, Manzanilla"
+                   value="{{ ubicacion }}" required>
+            <button type="submit">Buscar</button>
+        </form>
+    </section>
+
+    {% if error_message %}
+        <div class="alerta-error">{{ error_message }}</div>
+    {% endif %}
+
+    {% if ubicacion %}
+        <section class="resultados">
+            <h2>Resultados para: "{{ ubicacion }}" (página {{ page }})</h2>
+
+            <div class="columnas">
+                <div class="columna flora">
+                    <h3>Flora</h3>
+                    {% if flora_results %}
+                        {% for planta in flora_results %}
+                            <article class="tarjeta">
+                                {% if planta.imagen %}
+                                    <img src="{{ planta.imagen }}" alt="{{ planta.nombre_comun }}">
+                                {% endif %}
+                                <h4>{{ planta.nombre_comun }}</h4>
+                                <p class="cientifico">{{ planta.nombre_cientifico }}</p>
+                                <p class="meta">
+                                    {% if planta.tipo %}<span>Tipo: {{ planta.tipo }}</span>{% endif %}
+                                    {% if planta.ciclo %}<span>Ciclo: {{ planta.ciclo }}</span>{% endif %}
+                                </p>
+                                <p class="descripcion">{{ planta.descripcion }}</p>
+                            </article>
+                        {% endfor %}
+                    {% else %}
+                        <p>No se encontró flora asociada para esta ubicación.</p>
+                    {% endif %}
+                </div>
+
+                <div class="columna fauna">
+                    <h3>Fauna</h3>
+                    {% if fauna_results %}
+                        {% for animal in fauna_results %}
+                            <article class="tarjeta">
+                                <h4>{{ animal.nombre }}</h4>
+                                <p class="cientifico">{{ animal.nombre_cientifico }}</p>
+                                <p class="meta">
+                                    {% if animal.habitat %}<span>Hábitat: {{ animal.habitat }}</span>{% endif %}
+                                    {% if animal.dieta %}<span>Dieta: {{ animal.dieta }}</span>{% endif %}
+                                    {% if animal.poblacion %}<span>Población estimada: {{ animal.poblacion }}</span>{% endif %}
+                                </p>
+                                {% if animal.ubicaciones %}
+                                    <p class="ubicaciones">Ubicaciones: {{ animal.ubicaciones }}</p>
+                                {% endif %}
+                                {% if animal.descripcion %}
+                                    <p class="descripcion">{{ animal.descripcion }}</p>
+                                {% endif %}
+                            </article>
+                        {% endfor %}
+                    {% else %}
+                        <p>No se encontró fauna asociada para esta búsqueda.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="paginacion">
+                {% if page > 1 %}
+                    <a class="btn" href="?ubicacion={{ ubicacion }}&page={{ page|add:"-1" }}">⬅ Página anterior</a>
+                {% endif %}
+
+                {% if hay_mas_flora or hay_mas_fauna %}
+                    <a class="btn" href="?ubicacion={{ ubicacion }}&page={{ page|add:"1" }}">Mostrar más ➜</a>
+                {% endif %}
+            </div>
+        </section>
+    {% endif %}
+</body>
+</html>
