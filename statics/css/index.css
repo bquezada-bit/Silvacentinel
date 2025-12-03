@@ -123,7 +123,7 @@ nav a.active {
 .hero {
     position: relative;
     height: 600px;
-    background-image: url("../fondo.png");
+    background-image: url("../png/fondo.png");
     background-size: cover;
     background-position: center;
     display: flex;

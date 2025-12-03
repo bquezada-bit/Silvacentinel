@@ -152,7 +152,7 @@ USE_TZ = True
 # ARCHIVOS ESTÁTICOS Y MEDIA
 # ==============================================================================
 
-STATIC_URL = '/statics/'
+STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'statics',
