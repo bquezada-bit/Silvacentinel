@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 # BASE DIR Y .ENV
 # ==============================================================================
 
-DEBUG = os.getenv("DEBUG", "False") == "True"
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Cargar variables de entorno desde .env en la raíz del proyecto
@@ -92,7 +91,6 @@ WSGI_APPLICATION = 'prjProyecto.wsgi.application'
 # ==============================================================================
 
 if DEBUG:
-    # Desarrollo: MySQL local (como ya lo usabas)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -160,11 +158,10 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static' / 'app',
 ]
 
-STATIC_ROOT = BASE_DIR / 'staticfiles'  
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-
 # ==============================================================================
 # REST FRAMEWORK
 # ==============================================================================
