@@ -152,10 +152,10 @@ USE_TZ = True
 # ARCHIVOS ESTÁTICOS Y MEDIA
 # ==============================================================================
 
-STATIC_URL = '/static/'
+STATIC_URL = '/statics/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',
+    BASE_DIR / 'statics',
 ]
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
