@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 # BASE DIR Y .ENV
 # ==============================================================================
 
+DEBUG = os.getenv("DEBUG", "False") == "True"
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Cargar variables de entorno desde .env en la raíz del proyecto
